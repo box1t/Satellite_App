@@ -116,7 +116,7 @@ if st.session_state.authenticated:
         st.session_state.page = 'Войти в аккаунт'
         st.experimental_rerun()
 else:
-    st.session_state.page = st.sidebar.selectbox('Меню', ['О нас', 'Войти в аккаунт', 'Зарегистрироваться', 'Анализ спутниковых снимков', 'Прошлые результаты'])
+    st.session_state.page = st.sidebar.selectbox('Меню', ['О нас', 'Войти в аккаунт', 'Зарегистрироваться', 'Анализ спутниковых снимков'])
 
 page = st.session_state.page
 

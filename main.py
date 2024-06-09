@@ -433,7 +433,7 @@ def create_pdf_report(username, summary_statistics):
     styles.add(ParagraphStyle(name='MyBodyText', fontName='DejaVuSans', fontSize=12, leading=14))
     styles.add(ParagraphStyle(name='MyHeading2', fontName='DejaVuSans', fontSize=14, leading=16))
 
-    doc = SimpleDocTemplate("/home/snowwy/Desktop/DZZ/diff/report2.pdf", pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
+    doc = SimpleDocTemplate("report2.pdf", pagesize=letter, rightMargin=72, leftMargin=72, topMargin=72, bottomMargin=18)
     elements = []
 
     # Add the page title
@@ -540,21 +540,6 @@ elif page == 'Анализ спутниковых снимков':
     st.info("Вы можете выбрать модель сегментацию с помощью бокового меню")
     st.sidebar.title("Анализ данных")
     model_choice = st.sidebar.selectbox("Выберите модель сегментации:", ["UNet", "Attention UNet"])
-
-
-    if st.button('Выгрузить отчет в PDF'):
-        
-        if model_choice == "UNet":
-            history_dict = np.load('unet_history.npy', allow_pickle=True).item()
-            model_name = "UNet"
-        elif model_choice == "Attention UNet":
-            history_dict = np.load('attention_history.npy', allow_pickle=True).item()
-            model_name = "Attention Unet"
-        
-        summary_statistics = display_summary_statistics(history_dict, model_name)
-
-        # Create the PDF report
-        create_pdf_report(st.session_state.username, summary_statistics)
 
 
     class EncoderBlock(tf.keras.layers.Layer):
@@ -681,6 +666,24 @@ elif page == 'Анализ спутниковых снимков':
 
     output_dir = 'generated_masks'
     os.makedirs(output_dir, exist_ok=True)
+
+    pdf_report = st.button('Выгрузить отчет в PDF')
+
+    if pdf_report and uploaded_file is not None:
+        
+        if model_choice == "UNet":
+            history_dict = np.load('unet_history.npy', allow_pickle=True).item()
+            model_name = "UNet"
+        elif model_choice == "Attention UNet":
+            history_dict = np.load('attention_history.npy', allow_pickle=True).item()
+            model_name = "Attention Unet"
+        
+        summary_statistics = display_summary_statistics(history_dict, model_name)
+
+        # Create the PDF report
+        create_pdf_report(st.session_state.username, summary_statistics)
+    elif pdf_report:
+        st.error("Загрузите изображение")
 
     if uploaded_file is not None:
         file_bytes = np.asarray(bytearray(uploaded_file.read()), dtype=np.uint8)
